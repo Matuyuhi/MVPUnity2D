@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -7,16 +6,6 @@ using UnityEditor;
 
 namespace Core.Input
 {
-    [CreateAssetMenu(menuName = "InputActionAssetProfile", fileName = "InputActionAssetProfile")]
-    public class InputActionAssetProfile : ScriptableObject
-    {
-        [SerializeField] private InputActionAsset inputActionAsset;
-
-        public InputActionAsset GetUsingAsset()
-        {
-            return inputActionAsset;
-        }
-    }
 
     internal static class InputActionGenerator
     {
@@ -25,7 +14,7 @@ namespace Core.Input
         private const string RequiredNamespace = "using System;\n";
         private static readonly string SavePath = $"Assets/Scripts/Core/Input/Generated/{ClassName}.cs";
         private static readonly string ProfilePath = Application.dataPath + "/Resources";
-        private static InputActionAssetProfile profileAsset;
+        private static InputActionAssetProfile _profileAsset;
 
         [InitializeOnLoadMethod]
         private static void LoadProfile()
@@ -36,8 +25,8 @@ namespace Core.Input
                 return;
             }
 
-            profileAsset = Resources.Load<InputActionAssetProfile>("InputActionAssetProfile");
-            if (profileAsset == null)
+            _profileAsset = Resources.Load<InputActionAssetProfile>("InputActionAssetProfile");
+            if (_profileAsset == null)
             {
                 Debug.LogError("InputActionAssetProfile was not found! \nPlease create a profile in the Resources folder.");
             }
@@ -52,13 +41,13 @@ namespace Core.Input
         [MenuItem("InputSystem/GenerateActionName")]
         private static void Generate()
         {
-            if (profileAsset == null)
+            if (_profileAsset == null)
             {
                 Debug.LogError("InputActionAssetProfile is not loaded. Please load the profile first.");
                 return;
             }
 
-            var usingAsset = profileAsset.GetUsingAsset();
+            var usingAsset = _profileAsset.GetUsingAsset();
             var builder = new StringBuilder();
 
             // Generate class for action maps
@@ -96,7 +85,7 @@ namespace Core.Input
             var directoryPath = Path.GetDirectoryName(SavePath);
             if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(directoryPath);
+                if (directoryPath != null) Directory.CreateDirectory(directoryPath);
             }
 
             using (var stream = File.Create(SavePath))
@@ -144,21 +133,21 @@ namespace Core.Input
         {
             var builder = new StringBuilder();
 
-            builder.AppendLine($"       public readonly Guid MapId = new Guid(\"{actionMap.id}\");");
+            builder.AppendLine($"       public static readonly Guid MapId = new Guid(\"{actionMap.id}\");");
             foreach (var inputAction in actionMap)
             {
-                builder.AppendLine($"       public readonly Guid {inputAction.name} = new Guid(\"{inputAction.id}\");");
+                builder.AppendLine($"       public static readonly Guid {inputAction.name} = new Guid(\"{inputAction.id}\");");
             }
 
             builder.Remove(builder.Length - 1, 1);  // Remove the last new line
-            SurroundAsClass(builder, actionMap.name, false);
+            SurroundAsClass(builder, actionMap.name, true);
             return builder;
         }
 
         private static void SurroundAsClass(StringBuilder builder, string className, bool isStatic)
         {
             builder.Insert(0, $"    public{(isStatic ? " static" : string.Empty)} class {className}\n    {{\n");
-            builder.Append("    }\n");
+            builder.Append("\n    }\n");
         }
 
         private static void SurroundAsNamespace(StringBuilder builder, string namespaceName)
