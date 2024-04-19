@@ -1,0 +1,24 @@
+
+# ==== Prefix ====
+# fix:      A bug fix
+# feat:     A new feature
+# docs:     Documentation only changes
+# style:    Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+# refactor: A code change that neither fixes a bug nor adds a feature
+# perf:     A code change that improves performance
+# test:     Adding missing or correcting existing tests
+# chore:    Changes to the build process or auxiliary tools and libraries such as documentation generation
+#
+# 参考：https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#type
+
+# ==== Emojis ====
+# :bug:         🐛 バグ修正 (fix)
+# :sparkles:    ✨ 部分的な機能追加 (feat)
+# :memo:        📝 ドキュメント修正 (docs)
+# :lipstick:    💄 Lintエラーの修正やコードスタイルの修正 (style)
+# :recycle:     ♻️ リファクタリング (refactor)
+# :rocket:      🚀 パフォーマンス改善 (perf)
+# :green_heart: 💚 テストやCIの修正・改善 (test)
+# :bento:       🍱 依存パッケージなどのアップデート (chore)
+#
+# 絵文字一覧：https://gitmoji.dev/
