@@ -48,6 +48,7 @@ namespace Core.Input
             Started = null;
             Performed = null;
             Canceled = null;
+            _action.Disable();
         }
 
         public InputAction GetInputAction()

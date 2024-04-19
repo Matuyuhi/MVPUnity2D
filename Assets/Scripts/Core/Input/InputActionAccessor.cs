@@ -1,37 +1,45 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Core.Input
 {
+    /// <summary>
+    /// Application内で共通のInputActionAssetを管理するクラス
+    /// </summary>
     public class InputActionAccessor: MonoBehaviour
     {
-        [SerializeField] private InputActionAsset _inputActionAsset;
+        [SerializeField] private InputActionAsset inputActionAsset;
 
         public InputActionEvent CreateAction(Guid actionName)
         {
-            var action = _inputActionAsset.FindAction(actionName);
-            if (action == null)
+            var inputAction = inputActionAsset.FindAction(actionName);
+            if (inputAction == null)
             {
                 Debug.LogError($"Action '{actionName}' not found.");
                 return null;
             }
-            var actionEvent = new InputActionEvent(action);
-            action.Enable();
+            var actionEvent = new InputActionEvent(inputAction);
+            inputAction.Enable();
 
             return actionEvent;
         }
 
         private void Awake()
         {
+            if (inputActionAsset.IsUnityNull())
+            {
+                throw new NotImplementedException("InputActionAsset is not set.");
+            }
             Debug.Log("InputActionManager Start");
-            _inputActionAsset.Enable();
+            inputActionAsset.Enable();
         }
 
         private void OnDestroy()
         {
             Debug.Log("InputActionManager Dispose");
-            _inputActionAsset.Disable();
+            inputActionAsset.Disable();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Feature.Models
     {
         public ushort Health { get; private set; }
         
-        public Vector3 Position { get; set; } = Vector3.zero;
+        public float Speed { get; private set; } = 1.0f;
         
         public int SetHealth(ushort health)
         {

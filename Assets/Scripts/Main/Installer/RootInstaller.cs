@@ -1,10 +1,9 @@
 using Core.Input;
-using Feature.Common;
 using Feature.Repository;
 using VContainer;
 using VContainer.Unity;
 
-namespace Main
+namespace Main.Installer
 {
     public class RootInstaller: LifetimeScope
     {

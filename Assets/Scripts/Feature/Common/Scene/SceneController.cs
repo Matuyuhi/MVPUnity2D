@@ -1,3 +1,4 @@
+using Main;
 using VContainer;
 
 namespace Feature.Common.Scene

@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: Main.RootInstaller
+    TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
 --- !u!4 &1406799497
@@ -631,7 +631,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &1496654887
 SpriteRenderer:
   m_ObjectHideFlags: 0

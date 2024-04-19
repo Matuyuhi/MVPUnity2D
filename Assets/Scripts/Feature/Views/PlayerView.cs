@@ -1,4 +1,4 @@
-using System;
+using Core.Utilities;
 using UnityEngine;
 
 namespace Feature.Views
@@ -15,7 +15,13 @@ namespace Feature.Views
         
         public void Move(Vector2 direction)
         {
-            _rigidbody.AddForce(direction);
+            DebugEx.LogDetailed(direction);
+            _rigidbody.AddForce(direction, ForceMode2D.Force);
+        }
+        
+        public void SetPosition(Vector2 position)
+        {
+            _rigidbody.position = position;
         }
     }
 }

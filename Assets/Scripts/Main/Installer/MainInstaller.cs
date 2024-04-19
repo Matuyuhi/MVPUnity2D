@@ -1,4 +1,3 @@
-using Core.Input;
 using Feature.Common;
 using Feature.Models;
 using Feature.Presenters;
@@ -6,7 +5,7 @@ using Feature.Views;
 using VContainer;
 using VContainer.Unity;
 
-namespace Main
+namespace Main.Installer
 {
     public class MainInstaller: LifetimeScope
     {
@@ -19,6 +18,7 @@ namespace Main
             builder.Register<PlayerModel>(Lifetime.Scoped);
             builder.Register<PlayerPresenter>(Lifetime.Scoped);
             builder.Register<GameState>(Lifetime.Scoped);
+            builder.Register<GameInputController>(Lifetime.Scoped);
 
         }
     }

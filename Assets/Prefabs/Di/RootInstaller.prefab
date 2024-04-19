@@ -61,4 +61,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 457b43b260d04a4497b9f8c097d3a354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputActionAsset: {fileID: -944628639613478452, guid: ea070943a0cc741739267201895f51b0, type: 3}
+  inputActionAsset: {fileID: -944628639613478452, guid: ea070943a0cc741739267201895f51b0, type: 3}
