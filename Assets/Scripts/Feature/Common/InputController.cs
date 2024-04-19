@@ -6,19 +6,21 @@ using VContainer.Unity;
 
 namespace Feature.Common
 {
-    public class GameInputProvider: IStartable
+    public class InputController
     {
         private readonly InputActionAccessor _inputActionAccessor;
+        private readonly GameState _gameState;
         
         private InputActionEvent _jumpAction;
         private InputActionEvent _moveAction;
 
-        [Inject]
-        public GameInputProvider(
-            InputActionAccessor inputActionAccessor
+        public InputController(
+            InputActionAccessor inputActionAccessor,
+            GameState gameState
         )
         {
             _inputActionAccessor = inputActionAccessor;
+            _gameState = gameState;
         }
         
         public void Start()

@@ -1,3 +1,5 @@
+using Core.Input;
+using Feature.Common;
 using Feature.Repository;
 using VContainer;
 using VContainer.Unity;
@@ -8,8 +10,11 @@ namespace Main
     {
         protected override void Configure(IContainerBuilder builder)
         {
-            base.Configure(builder);
-            builder.Register<UserPreference>(Lifetime.Singleton);
+
+            builder.RegisterComponentInHierarchy<InputActionAccessor>();
+            builder.Register<RootInstance>(Lifetime.Singleton);
+            
+            builder.Register<UserRepository>(Lifetime.Singleton);
         }
     }
 }

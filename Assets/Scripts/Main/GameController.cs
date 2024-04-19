@@ -1,3 +1,4 @@
+using Feature.Common;
 using Feature.Presenters;
 using Feature.Repository;
 using UnityEngine;
@@ -8,20 +9,23 @@ namespace Main
 {
     public class GameController: IStartable
     {
-        private readonly UserPreference _userPreference;
+        private readonly UserRepository _userRepository;
         private readonly PlayerPresenter _playerPresenter;
+        private readonly RootInstance _rootInstance;
         [Inject]
         public GameController(
-            UserPreference userPreference,
-            PlayerPresenter playerPresenter
+            UserRepository userRepository,
+            PlayerPresenter playerPresenter,
+            RootInstance rootInstance
         )
         {
-            _userPreference = userPreference;
+            _userRepository = userRepository;
             _playerPresenter = playerPresenter;
+            _rootInstance = rootInstance;
         }
         public void Start()
         {
-            Debug.Log(_userPreference);
+            _rootInstance.GameState.Initialize();
         }
     }
 }
