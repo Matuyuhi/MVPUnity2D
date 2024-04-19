@@ -33,6 +33,7 @@ namespace Main
         {
             _gameState.Initialize();
             _gameInputController.Start();
+            _userRepository.Load();
             /* ここで開始処理 */
             _gameState.Start();
         }

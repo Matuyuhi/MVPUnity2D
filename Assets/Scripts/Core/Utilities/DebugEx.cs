@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Reflection;
 
@@ -9,7 +10,9 @@ namespace Core.Utilities
 
         public static void LogDetailed(object message)
         {
+#pragma warning disable CS0162
             if (!IsDebug) return;
+#pragma warning restore CS0162
 
             if (message == null)
             {
@@ -21,10 +24,14 @@ namespace Core.Utilities
             {
                 IEnumerable enumerable = message as IEnumerable;
                 int index = 0;
-                foreach (var item in enumerable)
+                if (enumerable != null)
                 {
-                    UnityEngine.Debug.Log($"{message.GetType().GetElementType()?.Name ?? message.GetType().Name}[{index}] = {item}");
-                    index++;
+                    foreach (var item in enumerable)
+                    {
+                        UnityEngine.Debug.Log(
+                            $"{message.GetType().GetElementType()?.Name ?? message.GetType().Name}[{index}] = {item}");
+                        index++;
+                    }
                 }
             }
             else if (message.GetType().IsValueType || message is string)
@@ -44,7 +51,22 @@ namespace Core.Utilities
 
                 foreach (var property in properties)
                 {
-                    details += $"\n {property.Name} = {property.GetValue(message)}";
+                    // 非推奨のプロパティをスキップする
+                    if (property.GetCustomAttributes(typeof(ObsoleteAttribute), true).Length > 0)
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        details += $"\n {property.Name} = {property.GetValue(message)}";
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        if (ex.InnerException != null)
+                            details +=
+                                $"\n {property.Name} = cannot retrieve value (Exception: {ex.InnerException.Message})";
+                    }
                 }
 
                 UnityEngine.Debug.Log(details);

@@ -53,7 +53,13 @@ namespace Main
             
             _jumpDisposable = Observable.EveryUpdate()
                 .Where(_ => IsJump())
-                .Subscribe(_ => DebugEx.LogDetailed("Jump!"));
+                .Subscribe(_ =>
+                {
+                    if (_gameState.GetState == GameState.State.Playing)
+                    {
+                        _playerPresenter.OnJump();
+                    }
+                });
         }
 
 
@@ -75,7 +81,6 @@ namespace Main
         private bool IsJump() => _jumpAction.ReadValue<float>() > 0;
         
         private bool CanMove() =>
-            _moveAction.ReadValue<Vector2>() != Vector2.zero &&
             _gameState.IsPlaying();
 
         public void Dispose()
