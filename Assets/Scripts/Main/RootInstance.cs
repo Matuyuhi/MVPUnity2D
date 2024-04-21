@@ -1,24 +1,24 @@
+#region
+
+using Interfaces;
 using VContainer;
+
+#endregion
 
 namespace Main
 {
     public class RootInstance
     {
-
-        public enum Level
-        {
-            Title,
-            Game,
-            Result
-        }
-
         [Inject]
         public RootInstance()
         {
         }
+
+        public ISceneDataModel CurrentDataModel { private get; set; }
         
-        public Level CurrentLevel { get; private set; }
-        
-        
+        public T GetCurrentDataModel<T>() where T : ISceneDataModel
+        {
+            return (T)this.CurrentDataModel;
+        }
     }
 }

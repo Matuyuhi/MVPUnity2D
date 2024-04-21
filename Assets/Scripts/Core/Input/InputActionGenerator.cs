@@ -1,12 +1,15 @@
+#region
+
 using System.IO;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEditor;
+
+#endregion
 
 namespace Core.Input
 {
-
     internal static class InputActionGenerator
     {
         private const string NamespaceName = "Core.Input";
@@ -14,7 +17,7 @@ namespace Core.Input
         private const string RequiredNamespace = "using System;\n";
         private static readonly string SavePath = $"Assets/Scripts/Core/Input/Generated/{ClassName}.cs";
         private static readonly string ProfilePath = Application.dataPath + "/Resources";
-        private static InputActionAssetProfile _profileAsset;
+        private static InputActionAssetProfile profileAsset;
 
         [InitializeOnLoadMethod]
         private static void LoadProfile()
@@ -25,10 +28,11 @@ namespace Core.Input
                 return;
             }
 
-            _profileAsset = Resources.Load<InputActionAssetProfile>("InputActionAssetProfile");
-            if (_profileAsset == null)
+            profileAsset = Resources.Load<InputActionAssetProfile>("InputActionAssetProfile");
+            if (profileAsset == null)
             {
-                Debug.LogError("InputActionAssetProfile was not found! \nPlease create a profile in the Resources folder.");
+                Debug.LogError(
+                    "InputActionAssetProfile was not found! \nPlease create a profile in the Resources folder.");
             }
         }
 
@@ -41,13 +45,13 @@ namespace Core.Input
         [MenuItem("InputSystem/GenerateActionName")]
         private static void Generate()
         {
-            if (_profileAsset == null)
+            if (profileAsset == null)
             {
                 Debug.LogError("InputActionAssetProfile is not loaded. Please load the profile first.");
                 return;
             }
 
-            var usingAsset = _profileAsset.GetUsingAsset();
+            var usingAsset = profileAsset.GetUsingAsset();
             var builder = new StringBuilder();
 
             // Generate class for action maps
@@ -85,7 +89,10 @@ namespace Core.Input
             var directoryPath = Path.GetDirectoryName(SavePath);
             if (!Directory.Exists(directoryPath))
             {
-                if (directoryPath != null) Directory.CreateDirectory(directoryPath);
+                if (directoryPath != null)
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
             }
 
             using (var stream = File.Create(SavePath))
@@ -121,10 +128,11 @@ namespace Core.Input
 
             foreach (var actionMap in actionAsset.actionMaps)
             {
-                builder.AppendLine($"       public static readonly Guid {actionMap.name} = new Guid(\"{actionMap.id}\");");
+                builder.AppendLine(
+                    $"       public static readonly Guid {actionMap.name} = new Guid(\"{actionMap.id}\");");
             }
 
-            builder.Remove(builder.Length - 1, 1);  // Remove the last new line
+            builder.Remove(builder.Length - 1, 1); // Remove the last new line
             SurroundAsClass(builder, ClassName, true);
             return builder;
         }
@@ -136,10 +144,11 @@ namespace Core.Input
             builder.AppendLine($"       public static readonly Guid MapId = new Guid(\"{actionMap.id}\");");
             foreach (var inputAction in actionMap)
             {
-                builder.AppendLine($"       public static readonly Guid {inputAction.name} = new Guid(\"{inputAction.id}\");");
+                builder.AppendLine(
+                    $"       public static readonly Guid {inputAction.name} = new Guid(\"{inputAction.id}\");");
             }
 
-            builder.Remove(builder.Length - 1, 1);  // Remove the last new line
+            builder.Remove(builder.Length - 1, 1); // Remove the last new line
             SurroundAsClass(builder, actionMap.name, true);
             return builder;
         }

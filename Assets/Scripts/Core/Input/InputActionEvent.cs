@@ -1,24 +1,30 @@
+#region
+
 using System;
 using UnityEngine.InputSystem;
+
+#endregion
 
 namespace Core.Input
 {
     public class InputActionEvent
     {
-        private readonly InputAction _action;
+        private readonly InputAction action;
+
         public InputActionEvent(InputAction action)
         {
-            _action = action;
-            
-            _action.performed += OnPerformed;
-            _action.started += OnStarted;
-            _action.canceled += OnCanceled;
-            _action.Enable();
+            this.action = action;
+
+            this.action.performed += OnPerformed;
+            this.action.started += OnStarted;
+            this.action.canceled += OnCanceled;
+            this.action.Enable();
         }
+
         public event Action<InputAction.CallbackContext> Started;
         public event Action<InputAction.CallbackContext> Performed;
         public event Action<InputAction.CallbackContext> Canceled;
-        
+
         private void OnStarted(InputAction.CallbackContext ctx)
         {
             Started?.Invoke(ctx);
@@ -34,27 +40,20 @@ namespace Core.Input
             Canceled?.Invoke(ctx);
         }
 
-        public TValue ReadValue<TValue>() where TValue : struct
-        {
-            return _action.ReadValue<TValue>();
-        }
+        public TValue ReadValue<TValue>() where TValue : struct => action.ReadValue<TValue>();
 
         public void Clear()
         {
-            _action.started -= OnStarted;
-            _action.performed -= OnPerformed;
-            _action.canceled -= OnCanceled;
+            action.started -= OnStarted;
+            action.performed -= OnPerformed;
+            action.canceled -= OnCanceled;
 
             Started = null;
             Performed = null;
             Canceled = null;
-            _action.Disable();
+            action.Disable();
         }
 
-        public InputAction GetInputAction()
-        {
-            return _action;
-        }
-        
+        public InputAction GetInputAction() => action;
     }
 }

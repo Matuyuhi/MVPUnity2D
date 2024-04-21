@@ -1,6 +1,11 @@
+#region
+
 using System;
 using System.Collections;
 using System.Reflection;
+using UnityEngine;
+
+#endregion
 
 namespace Core.Utilities
 {
@@ -11,24 +16,27 @@ namespace Core.Utilities
         public static void LogDetailed(object message)
         {
 #pragma warning disable CS0162
-            if (!IsDebug) return;
+            if (!IsDebug)
+            {
+                return;
+            }
 #pragma warning restore CS0162
 
             if (message == null)
             {
-                UnityEngine.Debug.Log("Null");
+                Debug.Log("Null");
                 return;
             }
 
             if (message.GetType().IsArray || message is IList)
             {
-                IEnumerable enumerable = message as IEnumerable;
-                int index = 0;
+                var enumerable = message as IEnumerable;
+                var index = 0;
                 if (enumerable != null)
                 {
                     foreach (var item in enumerable)
                     {
-                        UnityEngine.Debug.Log(
+                        Debug.Log(
                             $"{message.GetType().GetElementType()?.Name ?? message.GetType().Name}[{index}] = {item}");
                         index++;
                     }
@@ -36,14 +44,14 @@ namespace Core.Utilities
             }
             else if (message.GetType().IsValueType || message is string)
             {
-                UnityEngine.Debug.Log(message);
+                Debug.Log(message);
             }
             else
             {
-                FieldInfo[] fields = message.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                PropertyInfo[] properties = message.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                string details = $"{message.GetType().Name}:";
-            
+                var fields = message.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+                var properties = message.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                var details = $"{message.GetType().Name}:";
+
                 foreach (var field in fields)
                 {
                     details += $"\n {field.Name} = {field.GetValue(message)}";
@@ -64,12 +72,14 @@ namespace Core.Utilities
                     catch (TargetInvocationException ex)
                     {
                         if (ex.InnerException != null)
+                        {
                             details +=
                                 $"\n {property.Name} = cannot retrieve value (Exception: {ex.InnerException.Message})";
+                        }
                     }
                 }
 
-                UnityEngine.Debug.Log(details);
+                Debug.Log(details);
             }
         }
     }

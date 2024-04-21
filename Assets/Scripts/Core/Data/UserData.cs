@@ -1,8 +1,12 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using UnityEngine;
+
+#endregion
 
 namespace Core.Data
 {
@@ -62,7 +66,7 @@ namespace Core.Data
                 return ((IDefaultable<T>)Activator.CreateInstance(typeof(T))).DefaultInstance();
             }
 
-            return new T();
+            return new();
         }
 
         public void Set<T>(T data) where T : IDefaultable<T>, new()
@@ -85,7 +89,7 @@ namespace Core.Data
                 return keyValue.value;
             }
 
-            throw new Exception($"The type {type.Name} does not contain a field named {fieldName}.");
+            throw new($"The type {type.Name} does not contain a field named {fieldName}.");
         }
 
         public static class ReflectionHelper
@@ -106,7 +110,7 @@ namespace Core.Data
             }
         }
     }
-    
+
     [Serializable]
     public class KeyValue<TKey, TValue>
     {
@@ -114,7 +118,7 @@ namespace Core.Data
 
         public KeyValue(TKey key, TValue value)
         {
-            Key = key;
+            this.Key = key;
             this.value = value;
         }
 
@@ -133,7 +137,9 @@ namespace Core.Data
         public List<string> keys = new();
         public List<string> values = new();
 
-        public SerializableDictionary() { }
+        public SerializableDictionary()
+        {
+        }
 
         public SerializableDictionary(Dictionary<string, string> dict)
         {

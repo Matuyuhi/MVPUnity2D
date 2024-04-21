@@ -1,3 +1,5 @@
+#region
+
 using System;
 using Core.Input;
 using Core.Utilities;
@@ -8,23 +10,24 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
+#endregion
+
 namespace Main
 {
     /// <summary>
-    /// UniRxを使ってUpdateから入力を受け取るクラス
-    /// Stateを見て、それぞれのPresenterに通知する
+    ///     UniRxを使ってUpdateから入力を受け取るクラス
+    ///     Stateを見て、それぞれのPresenterに通知する
     /// </summary>
-    public class GameInputController: IStartable, IDisposable
+    public class GameInputController : IStartable, IDisposable
     {
-        private readonly InputActionAccessor _inputActionAccessor;
-        private readonly GameState _gameState;
-        private readonly PlayerPresenter _playerPresenter;
-        
-        private InputActionEvent _jumpAction;
-        private IDisposable _jumpDisposable;
-        
-        private InputActionEvent _moveAction;
-        private IDisposable _moveDisposable;
+        private readonly CompositeDisposable disposables = new();
+        private readonly GameState gameState;
+        private readonly InputActionAccessor inputActionAccessor;
+        private readonly PlayerPresenter playerPresenter;
+
+        private InputActionEvent jumpAction;
+
+        private InputActionEvent moveAction;
 
         [Inject]
         public GameInputController(
@@ -33,13 +36,21 @@ namespace Main
             PlayerPresenter playerPresenter
         )
         {
-            _inputActionAccessor = inputActionAccessor;
-            _gameState = gameState;
-            _playerPresenter = playerPresenter;
+            this.inputActionAccessor = inputActionAccessor;
+            this.gameState = gameState;
+            this.playerPresenter = playerPresenter;
         }
-        
-        
-        
+
+        public void Dispose()
+        {
+            jumpAction.Clear();
+
+            moveAction.Clear();
+
+            disposables.Dispose();
+        }
+
+
         public void Start()
         {
             DebugEx.LogDetailed("GameInputProvider Start");
@@ -49,47 +60,39 @@ namespace Main
 
         private void EnableJump()
         {
-            _jumpAction = _inputActionAccessor.CreateAction(Game.Jump);
-            
-            _jumpDisposable = Observable.EveryUpdate()
+            jumpAction = inputActionAccessor.CreateAction(Game.Jump);
+
+            Observable.EveryUpdate()
                 .Where(_ => IsJump())
                 .Subscribe(_ =>
                 {
-                    if (_gameState.GetState == GameState.State.Playing)
+                    if (gameState.GetState == GameState.State.Playing)
                     {
-                        _playerPresenter.OnJump();
+                        playerPresenter.OnJump();
                     }
-                });
+                })
+                .AddTo(disposables);
         }
 
 
         private void EnableMove()
         {
-            _moveAction = _inputActionAccessor.CreateAction(Game.Move);
-            
-            _moveDisposable = Observable.EveryUpdate()
+            moveAction = inputActionAccessor.CreateAction(Game.Move);
+
+            Observable.EveryUpdate()
                 .Where(_ => CanMove())
                 .Subscribe(_ =>
                 {
-                    if (_gameState.GetState == GameState.State.Playing)
+                    if (gameState.GetState == GameState.State.Playing)
                     {
-                        _playerPresenter.OnMove(_moveAction.ReadValue<Vector2>());
+                        playerPresenter.OnMove(moveAction.ReadValue<Vector2>());
                     }
-                });
+                })
+                .AddTo(disposables);
         }
-        
-        private bool IsJump() => _jumpAction.ReadValue<float>() > 0;
-        
-        private bool CanMove() =>
-            _gameState.IsPlaying();
 
-        public void Dispose()
-        {
-            _jumpAction.Clear();
-            _jumpDisposable.Dispose();
-            
-            _moveAction.Clear();
-            _moveDisposable.Dispose();
-        }
+        private bool IsJump() => jumpAction.ReadValue<float>() > 0;
+
+        private bool CanMove() => gameState.IsPlaying();
     }
 }

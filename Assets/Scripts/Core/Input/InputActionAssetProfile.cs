@@ -1,5 +1,9 @@
+#region
+
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+#endregion
 
 namespace Core.Input
 {
@@ -8,9 +12,6 @@ namespace Core.Input
     {
         [SerializeField] private InputActionAsset inputActionAsset;
 
-        public InputActionAsset GetUsingAsset()
-        {
-            return inputActionAsset;
-        }
+        public InputActionAsset GetUsingAsset() => inputActionAsset;
     }
 }

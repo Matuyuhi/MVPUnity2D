@@ -1,20 +1,27 @@
+#region
+
 using Feature.Common;
+using Feature.Common.Scene;
+using Feature.Common.Scene.Generated;
 using Feature.Presenters;
 using Feature.Repository;
 using VContainer;
 using VContainer.Unity;
 
+#endregion
+
 namespace Main
 {
     /// <summary>
-    /// Game Scene全体を管理するクラス
+    ///     Game Scene全体を管理するクラス
     /// </summary>
-    public class GameController: IStartable
+    public class GameController : IStartable
     {
-        private readonly UserRepository _userRepository;
-        private readonly RootInstance _rootInstance;
-        private readonly GameInputController _gameInputController;
-        private readonly GameState _gameState;
+        private readonly GameInputController gameInputController;
+        private readonly GameState gameState;
+        private readonly RootInstance rootInstance;
+        private readonly UserRepository userRepository;
+
         [Inject]
         public GameController(
             UserRepository userRepository,
@@ -24,18 +31,19 @@ namespace Main
             GameState gameState
         )
         {
-            _userRepository = userRepository;
-            _rootInstance = rootInstance;
-            _gameInputController = gameInputController;
-            _gameState = gameState;
+            this.userRepository = userRepository;
+            this.rootInstance = rootInstance;
+            this.gameInputController = gameInputController;
+            this.gameState = gameState;
         }
+
         public void Start()
         {
-            _gameState.Initialize();
-            _gameInputController.Start();
-            _userRepository.Load();
+            gameState.Initialize();
+            gameInputController.Start();
+            userRepository.Load();
             /* ここで開始処理 */
-            _gameState.Start();
+            gameState.Start();
         }
     }
 }
