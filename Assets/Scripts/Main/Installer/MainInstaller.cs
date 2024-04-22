@@ -4,6 +4,8 @@ using Feature.Common;
 using Feature.Models;
 using Feature.Presenters;
 using Feature.Views;
+using Interfaces.Presenters;
+using Main.Input;
 using VContainer;
 using VContainer.Unity;
 
@@ -19,7 +21,9 @@ namespace Main.Installer
 
             builder.RegisterComponentInHierarchy<PlayerView>();
             builder.Register<PlayerModel>(Lifetime.Scoped);
-            builder.Register<PlayerPresenter>(Lifetime.Scoped);
+            builder.Register<IPlayerPresenter, PlayerPresenter>(Lifetime.Scoped)
+                .WithParameter("playerView", resolver => resolver.Resolve<PlayerView>())
+                .WithParameter("playerModel", resolver => resolver.Resolve<PlayerModel>());
             builder.Register<GameState>(Lifetime.Scoped);
             builder.Register<GameInputController>(Lifetime.Scoped);
         }

@@ -3,8 +3,11 @@
 using Core.Utilities;
 using Feature.Models;
 using Feature.Views;
+using Interfaces.Presenters;
+using UniRx;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 #endregion
 
@@ -13,7 +16,7 @@ namespace Feature.Presenters
     /// <summary>
     ///     外部からの入力を受け取り、Modelに通知、Viewに反映する
     /// </summary>
-    public class PlayerPresenter
+    public class PlayerPresenter: IPlayerPresenter
     {
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
@@ -27,6 +30,7 @@ namespace Feature.Presenters
             this.playerView = playerView;
             this.playerModel = playerModel;
             this.playerView.OnHit += OnHit;
+            
         }
 
         /// <summary>
@@ -66,6 +70,16 @@ namespace Feature.Presenters
                 DebugEx.LogDetailed("Grounded");
                 playerModel.SetStayGround(true);
             }
+        }
+
+        public void Start()
+        {
+            playerView.Position
+                .Where(p => p != playerModel.Position.Value)
+                .Subscribe(x =>
+                {
+                    playerModel.SetPosition(x);
+                });
         }
     }
 }

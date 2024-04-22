@@ -4,7 +4,7 @@ using System;
 using Core.Input;
 using Core.Utilities;
 using Feature.Common;
-using Feature.Presenters;
+using Interfaces.Presenters;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -12,7 +12,7 @@ using VContainer.Unity;
 
 #endregion
 
-namespace Main
+namespace Main.Input
 {
     /// <summary>
     ///     UniRxを使ってUpdateから入力を受け取るクラス
@@ -23,7 +23,7 @@ namespace Main
         private readonly CompositeDisposable disposables = new();
         private readonly GameState gameState;
         private readonly InputActionAccessor inputActionAccessor;
-        private readonly PlayerPresenter playerPresenter;
+        private readonly IPlayerPresenter playerPresenter;
 
         private InputActionEvent jumpAction;
 
@@ -33,7 +33,7 @@ namespace Main
         public GameInputController(
             InputActionAccessor inputActionAccessor,
             GameState gameState,
-            PlayerPresenter playerPresenter
+            IPlayerPresenter playerPresenter
         )
         {
             this.inputActionAccessor = inputActionAccessor;

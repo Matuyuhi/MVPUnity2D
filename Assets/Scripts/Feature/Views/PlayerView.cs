@@ -2,6 +2,7 @@
 
 using System;
 using Core.Utilities;
+using UniRx;
 using UnityEngine;
 
 #endregion
@@ -17,14 +18,22 @@ namespace Feature.Views
     {
         private Rigidbody2D rigidBody2d;
 
+        public IReactiveProperty<Vector2> Position { get; private set; }
+
         private void Awake()
         {
             rigidBody2d = GetComponent<Rigidbody2D>();
+            Position = new ReactiveProperty<Vector2>(this.transform.position);
         }
 
         private void OnCollisionEnter2D(Collision2D other)
         {
             OnHit?.Invoke(other.collider);
+        }
+
+        private void FixedUpdate()
+        {
+            this.Position.Value = this.transform.position;
         }
 
         /// <summary>

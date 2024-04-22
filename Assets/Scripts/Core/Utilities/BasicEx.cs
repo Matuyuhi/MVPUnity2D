@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace Core.Utilities
 {
-    public static class BasicUtilities
+    public static class BasicEx
     {
         public static T CoerceIn<T>(T value, T min, T max) where T : IComparable<T>
         {

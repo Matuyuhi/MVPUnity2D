@@ -5,6 +5,8 @@ using Feature.Common.Scene;
 using Feature.Common.Scene.Generated;
 using Feature.Presenters;
 using Feature.Repository;
+using Interfaces.Presenters;
+using Main.Input;
 using VContainer;
 using VContainer.Unity;
 
@@ -21,11 +23,12 @@ namespace Main
         private readonly GameState gameState;
         private readonly RootInstance rootInstance;
         private readonly UserRepository userRepository;
+        private readonly IPlayerPresenter playerPresenter;
 
         [Inject]
         public GameController(
             UserRepository userRepository,
-            PlayerPresenter playerPresenter,
+            IPlayerPresenter playerPresenter,
             RootInstance rootInstance,
             GameInputController gameInputController,
             GameState gameState
@@ -35,6 +38,7 @@ namespace Main
             this.rootInstance = rootInstance;
             this.gameInputController = gameInputController;
             this.gameState = gameState;
+            this.playerPresenter = playerPresenter;
         }
 
         public void Start()
@@ -42,6 +46,7 @@ namespace Main
             gameState.Initialize();
             gameInputController.Start();
             userRepository.Load();
+            playerPresenter.Start();
             /* ここで開始処理 */
             gameState.Start();
         }
